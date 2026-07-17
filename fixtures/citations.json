@@ -1,0 +1,92 @@
+[
+  {
+    "source": "paper_001",
+    "target": "paper_004",
+    "reason": "Cites ocean acidification data"
+  },
+  {
+    "source": "paper_001",
+    "target": "paper_007",
+    "reason": "References climate tipping points"
+  },
+  {
+    "source": "paper_002",
+    "target": "paper_001",
+    "reason": "Builds on global warming analysis"
+  },
+  {
+    "source": "paper_002",
+    "target": "paper_006",
+    "reason": "Compares soil vs forest carbon sequestration"
+  },
+  {
+    "source": "paper_003",
+    "target": "paper_001",
+    "reason": "Addresses climate mitigation through renewables"
+  },
+  {
+    "source": "paper_004",
+    "target": "paper_001",
+    "reason": "Extends CO2 analysis to ocean systems"
+  },
+  {
+    "source": "paper_005",
+    "target": "paper_001",
+    "reason": "Quantifies agricultural greenhouse gas emissions"
+  },
+  {
+    "source": "paper_006",
+    "target": "paper_001",
+    "reason": "Analyzes forest carbon in climate context"
+  },
+  {
+    "source": "paper_006",
+    "target": "paper_002",
+    "reason": "Compares carbon sequestration mechanisms"
+  },
+  {
+    "source": "paper_007",
+    "target": "paper_001",
+    "reason": "Extends warming analysis to tipping points"
+  },
+  {
+    "source": "paper_007",
+    "target": "paper_004",
+    "reason": "References ocean circulation disruption"
+  },
+  {
+    "source": "paper_008",
+    "target": "paper_001",
+    "reason": "Addresses mitigation through efficiency"
+  },
+  {
+    "source": "paper_009",
+    "target": "paper_001",
+    "reason": "Proposes policy mechanisms for emissions reduction"
+  },
+  {
+    "source": "paper_010",
+    "target": "paper_001",
+    "reason": "Analyzes climate change impacts on biodiversity"
+  },
+  {
+    "source": "paper_010",
+    "target": "paper_007",
+    "reason": "References tipping points in ecosystems"
+  },
+  {
+    "source": "paper_011",
+    "target": "paper_003",
+    "reason": "Complements renewable energy discussion"
+  },
+  {
+    "source": "paper_012",
+    "target": "paper_001",
+    "reason": "Addresses adaptation to climate change"
+  },
+  {
+    "source": "paper_012",
+    "target": "paper_010",
+    "reason": "Considers vulnerable communities and biodiversity"
+  }
+]

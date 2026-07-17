@@ -1,0 +1,158 @@
+[
+  {
+    "id": "paper_001",
+    "title": "Climate Change and Global Warming: A Comprehensive Review",
+    "authors": ["Dr. Sarah Chen", "Prof. James Mitchell", "Dr. Elena Rodriguez"],
+    "abstract": "This paper provides a comprehensive review of climate change mechanisms, focusing on anthropogenic greenhouse gas emissions and their effects on global temperature patterns. We analyze data from 1980-2026 and project future scenarios.",
+    "year": 2024,
+    "imageUrl": "https://images.unsplash.com/photo-1446776653964-20c1d3a81b06?w=400&h=400&fit=crop",
+    "claims": [
+      "Global average temperature has increased by 1.1°C since pre-industrial times",
+      "CO2 levels have risen from 280 ppm to over 420 ppm",
+      "Human activities are responsible for approximately 97% of observed warming"
+    ]
+  },
+  {
+    "id": "paper_002",
+    "title": "Carbon Sequestration in Soil: Mechanisms and Potential",
+    "authors": ["Dr. Michael Zhang", "Prof. Lisa Anderson"],
+    "abstract": "We investigate soil carbon sequestration mechanisms and quantify the potential for agricultural lands to act as carbon sinks. Our study covers 50 different soil types across multiple climate zones.",
+    "year": 2025,
+    "imageUrl": "https://images.unsplash.com/photo-1441974231531-c6227db76b6e?w=400&h=400&fit=crop",
+    "claims": [
+      "Soil can sequester up to 2 tons of CO2 per hectare annually",
+      "Conservation tillage increases soil carbon by 30-50%",
+      "Soil carbon sequestration is reversible if land use changes"
+    ]
+  },
+  {
+    "id": "paper_003",
+    "title": "Renewable Energy Integration: Solar and Wind Synergies",
+    "authors": ["Prof. David Kumar", "Dr. Anna Petrov", "Dr. Carlos Mendez"],
+    "abstract": "This study examines the complementary nature of solar and wind energy generation and proposes optimal grid integration strategies for renewable energy sources.",
+    "year": 2024,
+    "imageUrl": "https://images.unsplash.com/photo-1509391366360-2e938aa1ef14?w=400&h=400&fit=crop",
+    "claims": [
+      "Solar and wind generation patterns are complementary in most regions",
+      "Grid integration of 50% renewables is technically feasible",
+      "Battery storage costs have decreased by 89% since 2010"
+    ]
+  },
+  {
+    "id": "paper_004",
+    "title": "Atmospheric CO2 Dynamics and Ocean Acidification",
+    "authors": ["Dr. Patricia Wong", "Prof. Robert Thompson"],
+    "abstract": "We analyze the relationship between atmospheric CO2 levels and ocean pH changes, examining the impact on marine ecosystems and calcifying organisms.",
+    "year": 2025,
+    "imageUrl": "https://images.unsplash.com/photo-1505142468610-359e7d316be0?w=400&h=400&fit=crop",
+    "claims": [
+      "Ocean pH has decreased by 0.1 units since pre-industrial times",
+      "Ocean acidification reduces shell formation in mollusks by 25-50%",
+      "CO2 absorption by oceans accounts for 25% of anthropogenic emissions"
+    ]
+  },
+  {
+    "id": "paper_005",
+    "title": "Methane Emissions from Agricultural Systems",
+    "authors": ["Dr. Henrik Larsson", "Prof. Yuki Tanaka", "Dr. Sophie Dubois"],
+    "abstract": "This comprehensive study quantifies methane emissions from livestock and rice paddies, identifying mitigation strategies and their effectiveness.",
+    "year": 2024,
+    "imageUrl": "https://images.unsplash.com/photo-1574943320219-553eb213f72d?w=400&h=400&fit=crop",
+    "claims": [
+      "Livestock accounts for 14.5% of global greenhouse gas emissions",
+      "Methane has 28-34 times the warming potential of CO2 over 100 years",
+      "Dietary shifts could reduce agricultural emissions by 40%"
+    ]
+  },
+  {
+    "id": "paper_006",
+    "title": "Forest Carbon Dynamics and Deforestation Impact",
+    "authors": ["Prof. Maria Santos", "Dr. Kwame Osei", "Dr. Natalia Volkova"],
+    "abstract": "We examine carbon storage in forests and quantify the impact of deforestation on global carbon cycles, with focus on tropical rainforests.",
+    "year": 2025,
+    "imageUrl": "https://images.unsplash.com/photo-1441974231531-c6227db76b6e?w=400&h=400&fit=crop",
+    "claims": [
+      "Tropical forests store 250+ tons of carbon per hectare",
+      "Deforestation releases 2-3 billion tons of CO2 annually",
+      "Reforestation can sequester 2-4 tons of CO2 per hectare per year"
+    ]
+  },
+  {
+    "id": "paper_007",
+    "title": "Tipping Points in Climate Systems: A Critical Analysis",
+    "authors": ["Dr. Alexei Volkov", "Prof. Jennifer Lee", "Dr. Omar Hassan"],
+    "abstract": "This paper analyzes potential climate tipping points and their cascading effects on global systems, including ice sheet collapse and thermohaline circulation disruption.",
+    "year": 2024,
+    "imageUrl": "https://images.unsplash.com/photo-1446776877081-d282a0f896e2?w=400&h=400&fit=crop",
+    "claims": [
+      "Arctic ice loss could trigger irreversible feedback loops",
+      "Amazon rainforest may reach a tipping point at 1.5-2°C warming",
+      "Permafrost thaw could release 1.5 trillion tons of CO2"
+    ]
+  },
+  {
+    "id": "paper_008",
+    "title": "Energy Efficiency in Buildings: Technologies and Implementation",
+    "authors": ["Dr. Fatima Al-Rashid", "Prof. Hans Mueller"],
+    "abstract": "We review emerging technologies for building energy efficiency and analyze implementation barriers and economic incentives for adoption.",
+    "year": 2025,
+    "imageUrl": "https://images.unsplash.com/photo-1486406146926-c627a92ad1ab?w=400&h=400&fit=crop",
+    "claims": [
+      "Buildings account for 30% of global energy consumption",
+      "Energy-efficient retrofits can reduce consumption by 50-80%",
+      "LED lighting reduces energy use by 75% compared to incandescent"
+    ]
+  },
+  {
+    "id": "paper_009",
+    "title": "Carbon Pricing Mechanisms: Economic Analysis and Effectiveness",
+    "authors": ["Prof. Thomas Bergström", "Dr. Priya Sharma", "Dr. Luis Gonzalez"],
+    "abstract": "This study evaluates different carbon pricing mechanisms including carbon taxes and cap-and-trade systems, analyzing their effectiveness and economic impacts.",
+    "year": 2024,
+    "imageUrl": "https://images.unsplash.com/photo-1454165804606-c3d57bc86b40?w=400&h=400&fit=crop",
+    "claims": [
+      "Carbon pricing can reduce emissions by 5-15% depending on price level",
+      "Cap-and-trade systems have reduced emissions in EU by 35% since 2005",
+      "Carbon tax revenue can fund renewable energy transition"
+    ]
+  },
+  {
+    "id": "paper_010",
+    "title": "Biodiversity Loss and Climate Change Interactions",
+    "authors": ["Dr. Amara Okonkwo", "Prof. Ingrid Bergman", "Dr. Raj Patel"],
+    "abstract": "We examine the complex interactions between climate change and biodiversity loss, analyzing feedback mechanisms and conservation implications.",
+    "year": 2025,
+    "imageUrl": "https://images.unsplash.com/photo-1441974231531-c6227db76b6e?w=400&h=400&fit=crop",
+    "claims": [
+      "Climate change is a primary driver of species extinction",
+      "Biodiversity loss reduces ecosystem resilience to climate impacts",
+      "Protected areas can buffer species against climate change"
+    ]
+  },
+  {
+    "id": "paper_011",
+    "title": "Hydrogen Economy: Potential and Challenges",
+    "authors": ["Dr. Kenji Yamamoto", "Prof. Svetlana Petrov", "Dr. Emma O'Brien"],
+    "abstract": "This paper analyzes the potential of hydrogen as an energy carrier, examining production methods, storage challenges, and deployment scenarios.",
+    "year": 2024,
+    "imageUrl": "https://images.unsplash.com/photo-1509391366360-2e938aa1ef14?w=400&h=400&fit=crop",
+    "claims": [
+      "Green hydrogen production costs have decreased by 40% since 2020",
+      "Hydrogen can replace fossil fuels in heavy industry and transport",
+      "Hydrogen storage remains a significant technical challenge"
+    ]
+  },
+  {
+    "id": "paper_012",
+    "title": "Climate Adaptation Strategies for Vulnerable Communities",
+    "authors": ["Prof. Amina Hassan", "Dr. Gabriel Silva", "Dr. Mei Chen"],
+    "abstract": "We assess climate adaptation strategies for vulnerable populations, focusing on water security, food production, and disaster resilience in developing regions.",
+    "year": 2025,
+    "imageUrl": "https://images.unsplash.com/photo-1441974231531-c6227db76b6e?w=400&h=400&fit=crop",
+    "claims": [
+      "Climate change will displace 200+ million people by 2050",
+      "Adaptation costs in developing countries could reach $300 billion annually",
+      "Nature-based solutions provide cost-effective adaptation benefits"
+    ]
+  }
+]
