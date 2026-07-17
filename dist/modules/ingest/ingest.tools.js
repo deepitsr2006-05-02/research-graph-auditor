@@ -7,15 +7,19 @@ var __decorate = (this && this.__decorate) || function (decorators, target, key,
 var __metadata = (this && this.__metadata) || function (k, v) {
     if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
 };
-import { ToolDecorator as Tool, Widget, z, Injectable } from '@nitrostack/core';
-import { readFileSync } from 'fs';
-import { join } from 'path';
+import { GeminiService } from "./gemini.service.js";
+import { PdfService } from "./pdf.service.js";
+import { ToolDecorator as Tool, Widget, z, Injectable, } from "@nitrostack/core";
+import { readFileSync, writeFileSync, mkdirSync, existsSync, } from "fs";
+import { join } from "path";
 /**
  * Ingest Tools
  *
  * Tools for uploading research papers and building citation networks
  */
 let IngestTools = class IngestTools {
+    gemini = new GeminiService();
+    pdf = new PdfService();
     papers = new Map();
     citations = [];
     constructor() {
@@ -37,64 +41,41 @@ let IngestTools = class IngestTools {
         }
     }
     async uploadPapers(input, context) {
-        context.logger.info(`Uploading ${input.filenames.length} papers`);
-        // Extract paper IDs from filenames and load from fixtures
-        const uploadedPapers = [];
-        for (const filename of input.filenames) {
-            // Map filenames to paper IDs from fixtures
-            let paper;
-            if (filename.includes('climate')) {
-                paper = this.papers.get('paper_001');
-            }
-            else if (filename.includes('carbon')) {
-                paper = this.papers.get('paper_002');
-            }
-            else if (filename.includes('renewable')) {
-                paper = this.papers.get('paper_003');
-            }
-            else if (filename.includes('ocean')) {
-                paper = this.papers.get('paper_004');
-            }
-            else if (filename.includes('methane')) {
-                paper = this.papers.get('paper_005');
-            }
-            else if (filename.includes('forest')) {
-                paper = this.papers.get('paper_006');
-            }
-            else if (filename.includes('tipping')) {
-                paper = this.papers.get('paper_007');
-            }
-            else if (filename.includes('energy')) {
-                paper = this.papers.get('paper_008');
-            }
-            else if (filename.includes('pricing')) {
-                paper = this.papers.get('paper_009');
-            }
-            else if (filename.includes('biodiversity')) {
-                paper = this.papers.get('paper_010');
-            }
-            else if (filename.includes('hydrogen')) {
-                paper = this.papers.get('paper_011');
-            }
-            else if (filename.includes('adaptation')) {
-                paper = this.papers.get('paper_012');
-            }
-            if (paper) {
-                uploadedPapers.push(paper);
-            }
+        const uploadDir = join(process.cwd(), "uploads");
+        if (!existsSync(uploadDir)) {
+            mkdirSync(uploadDir);
         }
-        context.logger.info(`Successfully extracted metadata from ${uploadedPapers.length} papers`);
+        const matches = input.file_content.match(/^data:([A-Za-z-+/]+);base64,(.+)$/);
+        const buffer = matches && matches.length === 3
+            ? Buffer.from(matches[2], "base64")
+            : Buffer.from(input.file_content, "base64");
+        const filename = `${crypto.randomUUID()}.pdf`;
+        const pdfPath = join(uploadDir, filename);
+        writeFileSync(pdfPath, buffer);
+        context.logger.info("Extracting PDF text...");
+        const text = await this.pdf.extractText(pdfPath);
+        context.logger.info("Sending to Gemini...");
+        const response = await this.gemini.summarizePaper(text);
+        if (!response) {
+            throw new Error("Gemini returned an empty response.");
+        }
+        const metadata = JSON.parse(response);
+        const id = crypto.randomUUID();
+        this.papers.set(id, {
+            id,
+            title: metadata.title,
+            authors: metadata.authors,
+            abstract: metadata.summary,
+            year: new Date().getFullYear(),
+            imageUrl: "",
+            claims: metadata.claims,
+        });
         return {
             success: true,
-            count: uploadedPapers.length,
-            papers: uploadedPapers.map(p => ({
-                id: p.id,
-                title: p.title,
-                authors: p.authors,
-                abstract: p.abstract,
-                year: p.year,
-                claims: p.claims,
-            })),
+            paper: {
+                id,
+                ...metadata,
+            },
         };
     }
     async buildGraph(input, context) {
@@ -143,10 +124,12 @@ let IngestTools = class IngestTools {
 };
 __decorate([
     Tool({
-        name: 'upload-papers',
-        description: 'Upload research papers and extract metadata including title, authors, abstract, and claims',
+        name: "upload-papers",
+        description: "Upload and analyze a research paper",
         inputSchema: z.object({
-            filenames: z.array(z.string()).describe('List of paper filenames to upload (e.g., ["climate_change_2026.pdf", "carbon_sequestration_study.pdf"])'),
+            file_name: z.string(),
+            file_type: z.string(),
+            file_content: z.string(),
         }),
     }),
     __metadata("design:type", Function),

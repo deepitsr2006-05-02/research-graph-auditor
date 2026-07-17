@@ -13,10 +13,10 @@ export class GeminiService {
     this.ai = new GoogleGenAI({ apiKey });
   }
 
-  async summarizePaper(text: string) {
-    const response = await this.ai.models.generateContent({
-      model: "gemini-2.5-flash",
-      contents: `
+  async summarizePaper(text: string): Promise<string> {
+  const response = await this.ai.models.generateContent({
+    model: "gemini-2.5-flash",
+    contents: `
 Analyze the following research paper and return ONLY valid JSON.
 
 {
@@ -30,8 +30,14 @@ Analyze the following research paper and return ONLY valid JSON.
 Paper:
 ${text}
 `
-    });
+  });
 
-    return response.text;
+  const result = response.text;
+
+  if (!result) {
+    throw new Error("Gemini returned an empty response.");
   }
+
+  return result;
+}
 }

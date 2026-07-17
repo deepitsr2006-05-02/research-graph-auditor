@@ -1,4 +1,4 @@
-import { ExecutionContext } from '@nitrostack/core';
+import { ExecutionContext } from "@nitrostack/core";
 interface GraphNode {
     id: string;
     label: string;
@@ -21,23 +21,15 @@ interface GraphData {
  * Tools for uploading research papers and building citation networks
  */
 export declare class IngestTools {
+    private gemini;
+    private pdf;
     private papers;
     private citations;
     constructor();
     private loadFixtures;
-    uploadPapers(input: {
-        filenames: string[];
-    }, context: ExecutionContext): Promise<{
+    uploadPapers(input: any, context: ExecutionContext): Promise<{
         success: boolean;
-        count: number;
-        papers: {
-            id: string;
-            title: string;
-            authors: string[];
-            abstract: string;
-            year: number;
-            claims: string[];
-        }[];
+        paper: any;
     }>;
     buildGraph(input: {
         paperIds?: string[];

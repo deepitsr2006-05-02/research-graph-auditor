@@ -26,7 +26,11 @@ Paper:
 ${text}
 `
         });
-        return response.text;
+        const result = response.text;
+        if (!result) {
+            throw new Error("Gemini returned an empty response.");
+        }
+        return result;
     }
 }
 //# sourceMappingURL=gemini.service.js.map
