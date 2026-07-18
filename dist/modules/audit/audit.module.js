@@ -5,7 +5,7 @@ var __decorate = (this && this.__decorate) || function (decorators, target, key,
     return c > 3 && r && Object.defineProperty(target, key, r), r;
 };
 import { Module } from '@nitrostack/core';
-import { AuditTools } from './audit.tools';
+import { AuditTools } from './audit.tools.js';
 let AuditModule = class AuditModule {
 };
 AuditModule = __decorate([
