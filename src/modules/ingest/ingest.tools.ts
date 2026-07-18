@@ -28,10 +28,12 @@ interface Paper {
   claims: string[];
 }
 
-interface Citation {
+interface Relationship {
   source: string;
   target: string;
-  reason: string;
+  type: "supports" | "contradicts" | "extends" | "related";
+  confidence: number;
+  explanation: string;
 }
 
 interface GraphNode {
@@ -46,6 +48,8 @@ interface GraphEdge {
   source: string;
   target: string;
   label: string;
+  confidence: number;
+  explanation: string;
 }
 
 interface GraphData {
@@ -63,28 +67,41 @@ export class IngestTools {
   private gemini = new GeminiService();
   private pdf = new PdfService();
   private papers: Map<string, Paper> = new Map();
-  private citations: Citation[] = [];
+  private relationships: Relationship[] = [];
 
   constructor() {
     this.loadFixtures();
   }
 
-  private loadFixtures() {
-    try {
-      const papersPath = join(process.cwd(), 'fixtures', 'papers.json');
-      const citationsPath = join(process.cwd(), 'fixtures', 'citations.json');
-      
-      const papersData = JSON.parse(readFileSync(papersPath, 'utf-8')) as Paper[];
-      const citationsData = JSON.parse(readFileSync(citationsPath, 'utf-8')) as Citation[];
-      
-      papersData.forEach(paper => {
-        this.papers.set(paper.id, paper);
-      });
-      this.citations = citationsData;
-    } catch (error) {
-      // Fixtures not available, will be populated via upload-papers
-    }
+ private loadFixtures() {
+  try {
+    const papersPath = join(process.cwd(), "fixtures", "papers.json");
+    const citationsPath = join(process.cwd(), "fixtures", "citations.json");
+
+    const papersData = JSON.parse(
+      readFileSync(papersPath, "utf-8")
+    ) as Paper[];
+
+    papersData.forEach((paper) => {
+      this.papers.set(paper.id, paper);
+    });
+
+    const citationsData = JSON.parse(
+      readFileSync(citationsPath, "utf-8")
+    );
+
+    this.relationships = citationsData.map((citation: any) => ({
+      source: citation.source,
+      target: citation.target,
+      type: "related",
+      confidence: 0.95,
+      explanation: citation.reason,
+    }));
+
+  } catch (error) {
+    console.log("No fixtures loaded");
   }
+}
 
   
   @Tool({
@@ -96,6 +113,7 @@ export class IngestTools {
     file_content: z.string(),
   }),
 })
+@Widget("upload")
 async uploadPapers(input: any, context: ExecutionContext) {
 
   const uploadDir = join(process.cwd(), "uploads");
@@ -112,7 +130,7 @@ async uploadPapers(input: any, context: ExecutionContext) {
       ? Buffer.from(matches[2], "base64")
       : Buffer.from(input.file_content, "base64");
 
-  const filename = `${crypto.randomUUID()}.pdf`;
+  const filename = `${randomUUID()}.pdf`;
   const pdfPath = join(uploadDir, filename);
 
   writeFileSync(pdfPath, buffer);
@@ -129,9 +147,14 @@ if (!response) {
   throw new Error("Gemini returned an empty response.");
 }
 
-const metadata = JSON.parse(response);
+const cleaned = response
+  .replace(/```json/g, "")
+  .replace(/```/g, "")
+  .trim();
 
-  const id = crypto.randomUUID();
+const metadata = JSON.parse(cleaned);
+
+const id = randomUUID();
 
   this.papers.set(id, {
     id,
@@ -142,6 +165,47 @@ const metadata = JSON.parse(response);
     imageUrl: "",
     claims: metadata.claims,
   });
+  const currentPaper = this.papers.get(id)!;
+
+for (const paper of this.papers.values()) {
+
+  if (paper.id === currentPaper.id) {
+    continue;
+  }
+
+  context.logger.info(
+    `Comparing "${currentPaper.title}" with "${paper.title}"`
+  );
+
+  const response = await this.gemini.comparePapersXYZ(
+    currentPaper,
+    paper
+  );
+
+  const cleaned = response
+    .replace(/```json/g, "")
+    .replace(/```/g, "")
+    .trim();
+
+  const relation = JSON.parse(cleaned);
+
+  const exists = this.relationships.some(
+  (r) =>
+    (r.source === currentPaper.id && r.target === paper.id) ||
+    (r.source === paper.id && r.target === currentPaper.id)
+);
+
+if (!exists) {
+  this.relationships.push({
+    source: currentPaper.id,
+    target: paper.id,
+    type: relation.relationship,
+    confidence: relation.confidence,
+    explanation: relation.reason,
+  });
+}
+
+}
 
   return {
     success: true,
@@ -183,17 +247,23 @@ const metadata = JSON.parse(response);
       }
     }
     
-    // Build edges from citations
-    const edges: GraphEdge[] = [];
-    for (const citation of this.citations) {
-      if (paperIds.includes(citation.source) && paperIds.includes(citation.target)) {
-        edges.push({
-          source: citation.source,
-          target: citation.target,
-          label: citation.reason,
-        });
-      }
-    }
+    // Build edges from relationships
+const edges: GraphEdge[] = [];
+
+for (const relation of this.relationships) {
+  if (
+    paperIds.includes(relation.source) &&
+    paperIds.includes(relation.target)
+  ) {
+    edges.push({
+  source: relation.source,
+  target: relation.target,
+  label: relation.type,
+  confidence: relation.confidence,
+  explanation: relation.explanation,
+});
+  }
+}
     
     const graphData: GraphData = {
       nodes,

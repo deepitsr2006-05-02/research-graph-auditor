@@ -12,6 +12,7 @@ import { PdfService } from "./pdf.service.js";
 import { ToolDecorator as Tool, Widget, z, Injectable, } from "@nitrostack/core";
 import { readFileSync, writeFileSync, mkdirSync, existsSync, } from "fs";
 import { join } from "path";
+import { randomUUID } from "crypto";
 /**
  * Ingest Tools
  *
@@ -21,23 +22,29 @@ let IngestTools = class IngestTools {
     gemini = new GeminiService();
     pdf = new PdfService();
     papers = new Map();
-    citations = [];
+    relationships = [];
     constructor() {
         this.loadFixtures();
     }
     loadFixtures() {
         try {
-            const papersPath = join(process.cwd(), 'fixtures', 'papers.json');
-            const citationsPath = join(process.cwd(), 'fixtures', 'citations.json');
-            const papersData = JSON.parse(readFileSync(papersPath, 'utf-8'));
-            const citationsData = JSON.parse(readFileSync(citationsPath, 'utf-8'));
-            papersData.forEach(paper => {
+            const papersPath = join(process.cwd(), "fixtures", "papers.json");
+            const citationsPath = join(process.cwd(), "fixtures", "citations.json");
+            const papersData = JSON.parse(readFileSync(papersPath, "utf-8"));
+            papersData.forEach((paper) => {
                 this.papers.set(paper.id, paper);
             });
-            this.citations = citationsData;
+            const citationsData = JSON.parse(readFileSync(citationsPath, "utf-8"));
+            this.relationships = citationsData.map((citation) => ({
+                source: citation.source,
+                target: citation.target,
+                type: "related",
+                confidence: 0.95,
+                explanation: citation.reason,
+            }));
         }
         catch (error) {
-            // Fixtures not available, will be populated via upload-papers
+            console.log("No fixtures loaded");
         }
     }
     async uploadPapers(input, context) {
@@ -49,7 +56,7 @@ let IngestTools = class IngestTools {
         const buffer = matches && matches.length === 3
             ? Buffer.from(matches[2], "base64")
             : Buffer.from(input.file_content, "base64");
-        const filename = `${crypto.randomUUID()}.pdf`;
+        const filename = `${randomUUID()}.pdf`;
         const pdfPath = join(uploadDir, filename);
         writeFileSync(pdfPath, buffer);
         context.logger.info("Extracting PDF text...");
@@ -59,8 +66,12 @@ let IngestTools = class IngestTools {
         if (!response) {
             throw new Error("Gemini returned an empty response.");
         }
-        const metadata = JSON.parse(response);
-        const id = crypto.randomUUID();
+        const cleaned = response
+            .replace(/```json/g, "")
+            .replace(/```/g, "")
+            .trim();
+        const metadata = JSON.parse(cleaned);
+        const id = randomUUID();
         this.papers.set(id, {
             id,
             title: metadata.title,
@@ -70,6 +81,30 @@ let IngestTools = class IngestTools {
             imageUrl: "",
             claims: metadata.claims,
         });
+        const currentPaper = this.papers.get(id);
+        for (const paper of this.papers.values()) {
+            if (paper.id === currentPaper.id) {
+                continue;
+            }
+            context.logger.info(`Comparing "${currentPaper.title}" with "${paper.title}"`);
+            const response = await this.gemini.comparePapersXYZ(currentPaper, paper);
+            const cleaned = response
+                .replace(/```json/g, "")
+                .replace(/```/g, "")
+                .trim();
+            const relation = JSON.parse(cleaned);
+            const exists = this.relationships.some((r) => (r.source === currentPaper.id && r.target === paper.id) ||
+                (r.source === paper.id && r.target === currentPaper.id));
+            if (!exists) {
+                this.relationships.push({
+                    source: currentPaper.id,
+                    target: paper.id,
+                    type: relation.relationship,
+                    confidence: relation.confidence,
+                    explanation: relation.reason,
+                });
+            }
+        }
         return {
             success: true,
             paper: {
@@ -98,14 +133,17 @@ let IngestTools = class IngestTools {
                 });
             }
         }
-        // Build edges from citations
+        // Build edges from relationships
         const edges = [];
-        for (const citation of this.citations) {
-            if (paperIds.includes(citation.source) && paperIds.includes(citation.target)) {
+        for (const relation of this.relationships) {
+            if (paperIds.includes(relation.source) &&
+                paperIds.includes(relation.target)) {
                 edges.push({
-                    source: citation.source,
-                    target: citation.target,
-                    label: citation.reason,
+                    source: relation.source,
+                    target: relation.target,
+                    label: relation.type,
+                    confidence: relation.confidence,
+                    explanation: relation.explanation,
                 });
             }
         }
@@ -132,6 +170,7 @@ __decorate([
             file_content: z.string(),
         }),
     }),
+    Widget("upload"),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", [Object, Object]),
     __metadata("design:returntype", Promise)

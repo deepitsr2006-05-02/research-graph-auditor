@@ -10,6 +10,8 @@ interface GraphEdge {
     source: string;
     target: string;
     label: string;
+    confidence: number;
+    explanation: string;
 }
 interface GraphData {
     nodes: GraphNode[];
@@ -24,7 +26,7 @@ export declare class IngestTools {
     private gemini;
     private pdf;
     private papers;
-    private citations;
+    private relationships;
     constructor();
     private loadFixtures;
     uploadPapers(input: any, context: ExecutionContext): Promise<{
